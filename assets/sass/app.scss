@@ -43,46 +43,6 @@ a {color: white;}
   &.noTransitions {
      @include transition(0);
   }
-  .keyboard-bg {
-    @include translateY(-20px);
-    display: block;
-    opacity: 0;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    pointer-events: none;
-  }
-
-  &[data-device="smartphonePortrait"].keyboard,
-  &[data-device="smartphoneLandscape"].keyboard,
-  &[data-device="tabletLandscape"].keyboard,
-  &[data-device="tabletPortrait"].keyboard {
-    @include box-sizing(border-box);
-    padding-top: 20px;
-    .keyboard-bg {
-      @include translateY(0px);
-      opacity: 1;
-    }
-  }
-
-  &[data-device="smartphonePortrait"].keyboard {
-    padding-bottom: 260px;
-    .keyboard-bg{background: inline-image('iphone-portrait.png');}
-  }
-  &[data-device="smartphoneLandscape"].keyboard {
-    padding-bottom: 194px;
-    .keyboard-bg{background: inline-image('iphone-landscape.png');}
-  }
-  &[data-device="tabletLandscape"].keyboard {
-    padding-bottom: 307px;
-    .keyboard-bg{background: inline-image('ipad-landscape.png');}
-  }
-  &[data-device="tabletPortrait"].keyboard {
-    padding-bottom: 395px;
-    .keyboard-bg{background: inline-image('ipad-portrait.png');}
-  }
 }
 
 
@@ -130,7 +90,7 @@ body>section {
   }
 }
 
-header .keyboard, .cssrefresh, .reloadiframe, .close {
+.cssrefresh, .reloadiframe, .close {
   @include border-radius(4px);
 
   color: #EEE;
@@ -172,7 +132,7 @@ header .keyboard, .cssrefresh, .reloadiframe, .close {
    .close{display: none;}
 }
 
-header .keyboard, header .cssrefresh, header .reloadiframe {
+header .cssrefresh, header .reloadiframe {
   right: auto;
   position: relative;
   top: auto;
@@ -188,7 +148,6 @@ header .keyboard, header .cssrefresh, header .reloadiframe {
     right: 0;
     bottom: 0;
     left: 0;
-    background: inline-image('icon-keyboard.png') 50% 50% no-repeat;
   }
   &.cssrefresh a:after, &.reloadiframe a:after {
     background: inline-image('icon-cssrefresh.png') 50% 50% no-repeat;

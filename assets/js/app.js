@@ -10,7 +10,6 @@ window.resbook = {};
     wrapper = null,
     devices = null,
     close = null,
-    keyboard = null,
     refreshBtn = null,
     reloadBtn = null,
     body = null,
@@ -115,7 +114,6 @@ window.resbook = {};
     devices = d.getElementById('devices');
     size = d.getElementById('size');
     close = d.querySelector('.close a');
-    keyboard = d.querySelector('.keyboard a');
     refreshBtn = d.querySelector('.cssrefresh a');
     reloadBtn = d.querySelector('.reloadiframe a');
     body = d.querySelector('body');
@@ -173,13 +171,6 @@ window.resbook = {};
       e.preventDefault();
       e.stopPropagation();
       w.location = d.URL;
-    }, false);
-
-    keyboard.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      keyboard.classList.toggle('active');
-      wrapper.classList.toggle('keyboard');
     }, false);
 
     refreshBtn.addEventListener('click', function(e) {

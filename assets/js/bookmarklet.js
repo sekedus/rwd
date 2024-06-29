@@ -15,9 +15,6 @@ javascript:void((function () {
             '&#60;a href=&#34;#&#34;>&times;&#60;/a>' +
           '&#60;/div>' +
           '&#60;div id=&#34;size&#34;>&#60;/div>' +
-          '&#60;div class=&#34;keyboard&#34;>' +
-            '&#60;a href=&#34;#&#34;>I&#60;/a>' +
-          '&#60;/div>' +
           '&#60;div class=&#34;cssrefresh&#34;>' +
             '&#60;a href=&#34;#&#34;>I&#60;/a>' +
           '&#60;/div>' +
@@ -45,7 +42,6 @@ javascript:void((function () {
         '&#60;section>' +
           '&#60;div id=&#34;wrapper&#34;>' +
             '&#60;iframe src=&#34;'+d.URL+'&#34; onLoad=&#34;resbook.changeUrl(this.contentWindow.location,this.contentDocument.title);&#34;>&#60;/iframe>' +
-          '&#60;span class=&#34;keyboard-bg&#34;>&#60;/span>' +
           '&#60;/div>' +
         '&#60;/section>' +
       '&#60;/body>' +
