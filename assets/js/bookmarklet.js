@@ -6,8 +6,8 @@ javascript:void((function () {
       '&#60;head>' +
         '&#60;meta charset=&#34;UTF-8&#34;>' +
         '&#60;title>'+d.title+' - Responsive test &#60;/title>' +
-        '&#60;link rel=&#34;stylesheet&#34; href=&#34;//responsive.victorcoulon.fr/assets/css/app.css&#34;>' +
-        '&#60;script src=&#34;//responsive.victorcoulon.fr/assets/js/app.js&#34;>&#60;/script>' +
+        '&#60;link rel=&#34;stylesheet&#34; href=&#34;//cdn.jsdelivr.net/gh/Victa/responsive-bookmarklet@master/assets/css/app.css&#34;>' +
+        '&#60;script src=&#34;//cdn.jsdelivr.net/gh/Victa/responsive-bookmarklet@master/assets/js/app.js&#34;>&#60;/script>' +
       '&#60;/head>' +
       '&#60;body>' +
         '&#60;header>' +
