@@ -7,39 +7,43 @@ $devices-width: 208px;
 @import "compass/reset", "compass/css3";
 
 // Base
+*, *:before, *:after {@include box-sizing(border-box);}
+
 html, body {height: 100%;}
 
 body {
   overflow: hidden;
-  background: #000 inline-image('linen.jpg') 0 0 repeat;
+  background: #040404 inline-image('linen.jpg') 0 0 repeat;
   position: relative;
-  font: 14px/1 "Lucida Console", "Lucida Sans Typewriter", Monaco, "Bitstream Vera Sans Mono", monospace;
-  color: #FFF;
-  text-shadow: 0 -1px 0 black;
+  font: 14px/1 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  color: #f5f5f5;
+  text-shadow: 0 -1px 0 #000;
 }
 
-a {color: white;}
+a {color: #f5f5f5;}
 
 // Styles
 #wrapper {
-  @include transition(height $transition-duration ease, width $transition-duration ease, margin $transition-duration ease);
-  @include box-shadow(0 0 12px 1px black);
+  @include transition(width $transition-duration ease, height $transition-duration ease);
+  @include transform-origin(50%);
+  @include box-shadow(0 0 12px 1px #000);
+  @include translate3d(0, 0, 0);
 
-  -webkit-transform: translate3d(0, 0, 0);
-
-  iframe::-webkit-scrollbar { display: none; }
-  iframe::-moz-scrollbar { display: none; }
+  iframe::-webkit-scrollbar {display: none;}
+  iframe::-moz-scrollbar {display: none;}
 
   position: relative;
-  background-color: #FFF;
+  background-color: #f5f5f5;
   width: 100%;
   height: 100%;
   display: block;
   margin: 0 auto;
+
   iframe {
     width: 100%;
     height: 100%;
   }
+
   &.noTransitions {
      @include transition(0);
   }
@@ -54,35 +58,53 @@ body>header {
   top: 0;
   right: 0;
   left: 0;
-  height: 51px;
   z-index: 100;
+
+  .menu {
+    max-width: 768px;
+    height: $height-topbar;
+    padding: 8px;
+    margin: 0 auto;
+  }
+
+  @media screen and (min-width: 640px) {
+    .menu {padding: 8px 15px;}
+  }
 }
 
 body>section {
   position: fixed;
   top: $height-topbar;
-  left: 0;right: 0;
+  right: 0;
   bottom: 0;
+  left: 0;
   z-index: 3;
-  overflow-y: scroll;
 }
 
 #size {
-  @include transition( padding $transition-duration ease);
+  @include transition(padding $transition-duration ease);
   @include background-image(linear-gradient(#202021, #222223));
   @include box-shadow(0 1px 0 #363738);
   @include border-radius(4px);
-  -webkit-transform: translate3d(0, 0, 0);
+  @include translate3d(0, 0, 0);
 
-  color: #EEE;
+  color: #eee;
   border: 1px solid #040404;
-  text-transform: uppercase;
-  text-align: center;
   padding: 9px 12px 7px;
-  margin: 9px 0 0 8px;
-  min-width: 80px;
+  margin-right: 8px;
   display: block;
   float: left;
+
+  .width, .height {
+    display: inline-block;
+    max-width: 34px;
+  }
+
+  [contenteditable]:focus {
+    @include border-radius(2px);
+    outline-offset: 1px;
+    outline: 1px solid #aaa;
+  }
 
   @media screen and (max-width: 480px) {
     padding-left: 6px;
@@ -90,15 +112,15 @@ body>section {
   }
 }
 
-.cssrefresh, .reloadiframe, .close {
+.rotate, .cssrefresh, .reloadiframe, .close {
   @include border-radius(4px);
 
-  color: #EEE;
-  position: absolute;
-  z-index: 1;
-  top: 8px;
-  right: 8px;
+  color: #eee;
+  float: right;
   border: 1px solid #363738;
+
+  &.close a {line-height: 26px;}
+
   a {
     @include background(linear-gradient(rgba(#343434, 1), rgba(#242424, 1)));
     @include box-shadow(inset 0 1px 0 #3c3c3c);
@@ -106,7 +128,6 @@ body>section {
 
     text-decoration: none;
     border: 1px solid #040404;
-    float: left;
     display: block;
     width: 30px;
     height: 30px;
@@ -115,126 +136,82 @@ body>section {
     text-transform: uppercase;
     font-size: 16px;
     text-align: center;
+
     &:hover {
       @include background(linear-gradient(rgba(#313131, 1), rgba(#242424, 1)));
     }
   }
 
-  a.active,a:active {
-    @include background(linear-gradient(rgba(#1C1C1C, 1), rgba(#242424, 1)));
+  a.active, a:active {
+    @include background(linear-gradient(rgba(#1c1c1c, 1), rgba(#242424, 1)));
     @include box-shadow(inset 0 1px 0 #242424);
+
     outline: none;
-    span{opacity: 1;}
   }
 }
 
-@media screen and (max-width: 480px) {
-   .close{display: none;}
-}
+header {
+  .rotate, .cssrefresh, .reloadiframe {
+    margin-right: 8px;
 
-header .cssrefresh, header .reloadiframe {
-  right: auto;
-  position: relative;
-  top: auto;
-  float: left;
-  margin: 8px 0 0 8px;
-  a {text-indent: -9999px;}
-  a:after {
-    opacity: .75;
-    content: "";
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-  }
-  &.cssrefresh a:after, &.reloadiframe a:after {
-    background: inline-image('icon-cssrefresh.png') 50% 50% no-repeat;
+    a {
+      position: relative;
+      text-indent: -9999px;
+    }
+
+    a:after {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    &.rotate {float: left;}
+    &.rotate a:after {
+      background: inline-image('icon-rotate.png') 50% 50% no-repeat; /* solar/smartphone-rotate-2-bold */
+    }
+
+    &.cssrefresh a:after, &.reloadiframe a:after {
+      background: inline-image('icon-cssrefresh.png') 50% 50% no-repeat;
+    }
   }
 }
 
 #devices {
+  @include transition(width $transition-duration ease);
   @include border-radius(4px);
-  @include transition(all 200ms ease);
 
-  position: absolute;
-  z-index: 1;
-  top: 8px;
-  left: 50%;
-  margin-left: -104px;
+  float: left;
   border: 1px solid #363738;
-  a:first-of-type {
-    @include border-radius(4px 0 0 4px);
-  }
-  a:last-of-type {
-    @include border-radius(0 4px 4px 0);
-    border-right-width: 1px;
-  }
-  a {
-    @include background(linear-gradient(rgba(#313131, 1), rgba(#242424, 1)));
-    @include box-shadow(inset 0 1px 0 #3c3c3c);
+  select {
+    @include background(linear-gradient(rgba(#2c2c2c, 1), rgba(#242424, 1)));
+    @include box-shadow(inset 0 1px 0 #242424);
+    @include border-radius(4px);
 
     text-decoration: none;
     border: 1px solid #040404;
     border-right-width: 0;
-    float: left;
-    display: block;
-    width: 40px;
     height: 30px;
     outline: none;
-    &:hover {
-      @include background(linear-gradient(rgba(#2c2c2c, 1), rgba(#242424, 1)));
-    }
+    color: #f5f5f5;
+    font-family: inherit;
+    font-size: 1rem;
+
+    option {background: #2e2f2f;}
   }
 
-  a.active,a:active {
-    @include background(linear-gradient(rgba(#1C1C1C, 1), rgba(#242424, 1)));
-    @include box-shadow(inset 0 1px 0 #242424);
-    outline: none;
-    span{opacity: 1;}
-  }
-
-  span {
-    text-align: center;
-    display: block;
-    width: 40px;
-    height: 30px;
-    text-indent: -9999px;
-    opacity: .75;
-  }
-
-   .tablet-portrait span, .tablet-landscape span {
-    background: transparent inline-image('icon-ipad.png') 50% 50% no-repeat;
-  }
-
-  .smartphone-portrait span, .smartphone-landscape span {
-    background: transparent inline-image('icon-iphone.png') 50% 50% no-repeat;
-  }
-
-  .tablet-portrait span, .smartphone-landscape span {
-    @include rotate(90deg);
-  }
-
-  .auto span {
-    text-indent: 0;
-    line-height: 30px;
-    text-transform: uppercase;
-    font-size: 10px;
-  }
-
-  @media screen and (max-width: 600px) {
-    margin-left: -54px;
-  }
-
-  @media screen and (max-width: 520px) {
-    margin-left: -25px;
-    @include transition(all 0s ease);
+  @media screen and (min-width: 480px) {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
   }
 
   @media screen and (max-width: 480px) {
-    right: 8px;
-    margin: 0;
-    left: auto;
+    select {max-width: 110px;}
   }
 }

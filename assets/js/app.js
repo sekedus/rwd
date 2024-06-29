@@ -7,26 +7,68 @@ window.resbook = {};
     w = window,
     url = d.URL,
     title = d.title,
+    body = null,
+    container = null,
     wrapper = null,
+    sizeWidth = null,
+    sizeHeight = null,
     devices = null,
-    close = null,
+    rotate = null,
     refreshBtn = null,
     reloadBtn = null,
-    body = null,
-    size = null,
-    auto = true,
+    close = null,
+    area = null,
+    sizes = null,
     isResized = false,
     isAnimated = false,
-    sizes = {
-      smartphonePortrait: [320, 480],
-      smartphoneLandscape: [480, 320],
-      tabletPortrait: [1024, 768],
-      tabletLandscape: [768, 1024],
-      auto: 'auto'
+    viewPort = {
+      phone: [
+        [320, 568, 'iPhone 5'],
+        [360, 740, 'Galaxy S9'],
+        [375, 812, 'iPhone X'],
+        [385, 640, 'Optimus G E975'], //384
+        [393, 873, 'Mi 10T Pro'],
+        [430, 932, 'iPhone 15 Pro Max'],
+        [480, 854, 'OnePlus 3'] //853
+      ],
+      tablet: [
+        [601, 962, 'Nexus 7'],
+        [768, 1024, 'iPad Mini'],
+        [800, 1280, 'Galaxy Tab 3 10.1'],
+        [810, 1080, 'iPad 10.2'],
+        [820, 1180, 'iPad Air 4'],
+        [834, 1194, 'iPad Pro 11']
+      ],
+      desktop: [
+        [1280, 720, 'Surface 3'],
+        [1366, 768, 'Surface RT'],
+        [1440, 900, 'MacBook Pro 15"'],
+        [1536, 864, 'MacBook Pro 16"'],
+        [1600, 900, 'Monitor 20"'],
+        [1680, 1050, 'Monitor 22"'],
+        [1920, 1080, 'Monitor 23"'],
+        [2560, 1440, 'Monitor 27"']
+      ]
+    },
+    firstUCase = function(str) {
+      // Uppercase first character
+      return str.replace(str.charAt(0), str.charAt(0).toUpperCase());
+    },
+    isNumeric = function(data) {
+      if (typeof data == 'number') return true;
+      return !isNaN(data) && !isNaN(parseFloat(data));
+    },
+    keyEvent = function(e, kc) {
+      var keyMap = {
+        "Enter": 13,
+        "KeyR": 82,
+        "F5": 116
+      };
+      return e.code ? keyMap[e.code] : e.keyCode;
     },
     refreshCss = function(disable) {
       var ifrm = d.querySelector('#wrapper iframe');
-      ifrm =(ifrm.contentWindow) ? ifrm.contentWindow :(ifrm.contentDocument.document) ? ifrm.contentDocument.document : ifrm.contentDocument;
+      ifrm = (ifrm.contentWindow) ? ifrm.contentWindow : (ifrm.contentDocument.document) ? ifrm.contentDocument.document : ifrm.contentDocument;
       var b = ifrm.document.querySelector('body');
       if (disable) {
         var el = ifrm.document.getElementById('cssrefresh');
@@ -35,149 +77,187 @@ window.resbook = {};
           b.classList.remove('cssrefresh');
         }
       } else {
-        var t = ifrm.document.createTextNode("(function() {var script=document.createElement('script');script.setAttribute('src','//cdn.jsdelivr.net/gh/Victa/responsive-bookmarklet@master/assets/js/cssrefresh.js');script.setAttribute('id','cssrefresh');var head=document.getElementsByTagName('head');head[0].appendChild(script)})()"),
-          s = ifrm.document.createElement("script");
+        var t = ifrm.document.createTextNode("(function(){var script=document.createElement('script');script.setAttribute('src','//cdn.jsdelivr.net/gh/sekedus/rwd@master/assets/js/cssrefresh.min.js');script.setAttribute('id','cssrefresh');document.getElementsByTagName('head')[0].appendChild(script)})()"),
+          s = ifrm.document.createElement('script');
         b.classList.add('cssrefresh');
         s.appendChild(t);
         ifrm.document.body.appendChild(s);
       }
     },
     reloadIframe = function() {
-      var ifrm = d.querySelector('#wrapper iframe');
-      ifrm.src += '';
+      var ifrm = d.querySelector('#wrapper iframe'),
+        url = ifrm.src;
+      ifrm.src = '';
+      setTimeout(function(){ ifrm.src = url; }, 10);
     },
-    resize = function(w, h, f) {
-      w = w || wrapper.clientWidth;
-      h = h || wrapper.clientHeight;
-      size.innerHTML = w + 'x' + h;
+    showSize = function(w, h) {
+      w = isNumeric(w) ? w : area.width;
+      h = isNumeric(h) ? h : area.height;
+      sizes = [w, h];
+      sizeWidth.innerHTML = w;
+      sizeHeight.innerHTML = h;
     },
-    setPosition = function(wh, t, cl) {
-      var width = (wh == 'auto') ? w.innerWidth : wh[0],
-        height = (wh == 'auto') ? w.innerHeight : wh[1],
-        style = 'width:' + width + 'px;height:' + height + 'px;margin-top:20px;';
-      if (typeof(width) == 'undefined' || typeof(height) == 'undefined') return false;
-      style += (wh === 'auto') ? 'margin-top:0;' : '';
-      wrapper.setAttribute('style', style);
-      wrapper.setAttribute('data-device', cl);
-      body.setAttribute('style', 'min-height:' + height + 'px;min-width:' + width + 'px;');
-      resize(width, height);
+    setPosition = function(wh, t) {
+      var width = wh == 'auto' ? area.width : wh[0],
+        height = wh == 'auto' ? area.height : wh[1],
+        style = 'width:' + width + 'px;height:' + height + 'px;';
+      if (typeof width == 'undefined' || typeof height == 'undefined') return false;
+      showSize(width, height);
+
       if (wh === 'auto' && !t) {
         isResized = false;
         setTimeout(function() {
-          wrapper.setAttribute('style', '');
-          body.setAttribute('style', '');
+          wrapper.removeAttribute('style');
           isAnimated = false;
         }, 260);
-      } else {
-        isAnimated = false;
+        return false;
       }
+
+      var finalWidth = 0,
+        overWidth = false,
+        overHeight = false;
+
+      if (width <= area.width) {
+        finalWidth = width;
+      } else {
+        finalWidth = area.width;
+        overWidth = true;
+      }
+
+      var scaleValue = finalWidth / width,
+        newHeight = height * scaleValue;
+
+      if (newHeight > area.height) {
+        scaleValue = area.height / height;
+        finalWidth = width * scaleValue;
+        overWidth = true;
+        overHeight = true;
+      }
+
+      var resizeHeight = height * scaleValue,
+        posTop = (height - resizeHeight) / 2 + 1;
+
+      var resizeWidth = overHeight ? area.width : finalWidth,
+        posLeft = (width - resizeWidth) / 2;
+
+      if (overWidth) {
+        style += 'transform:scale(' + scaleValue + ');-webkit-transform:scale(' + scaleValue + ');position:absolute;top:' + (-1 * posTop) + 'px;left:' + (-1 * posLeft) + 'px;margin:0;';
+      } else {
+        style += 'transform:scale(1);-webkit-transform:scale(1);position:static;top:0;left:0;margin:0 auto;';
+      }
+
+      wrapper.setAttribute('style', style);
+      isAnimated = false;
     },
     readyElement = function(id, callback) {
       var interval = setInterval(function() {
         if (d.getElementById(id)) {
-          callback(d.getElementById(id));
           clearInterval(interval);
+          callback(d.getElementById(id));
         }
       }, 60);
+    },
+    setDevice = function(device) {
+      var data = viewPort[device],
+        opts = '';
+      if (data.length > 0) {
+        opts += '<option value="" disabled>------------------------------------</option>';
+        opts += `<option value="" disabled># ${firstUCase(device)}</option>`;
+        [].forEach.call(data, function(item, i) {
+          opts += `<option value="${i}" data-device="${device}">${item[2]} (${item[0]}x${item[1]})</option>`;
+        });
+      }
+      return opts;
     };
-
-  // === Public methods ====
-
-  /**
-
-   * Change url and the document title with pushState method
-
-   * @param  {string} u   url of the new page
-
-   * @param  {title} t title of the new page
-
-   */
-  rb.changeUrl = function(u, t) {
-    d.title = t + ' - Responsive test';
-    if (history.pushState) {
-      try {
-        history.pushState({}, "New Page", u);
-      } catch(e) {}
-    }
-    if (refreshBtn.classList.contains('active')) {
-      refreshCss();
-    } else {
-      refreshCss(true);
-    }
-  };
 
   // "document ready"
   readyElement('wrapper', function() {
 
     // Set var cache
+    body = d.querySelector('body');
+    container = d.getElementById('container');
     wrapper = d.getElementById('wrapper');
-    devices = d.getElementById('devices');
-    size = d.getElementById('size');
-    close = d.querySelector('.close a');
+    sizeWidth = d.querySelector('#size .width');
+    sizeHeight = d.querySelector('#size .height');
+    devices = d.querySelector('#devices select');
+    rotate = d.querySelector('.rotate a');
     refreshBtn = d.querySelector('.cssrefresh a');
     reloadBtn = d.querySelector('.reloadiframe a');
-    body = d.querySelector('body');
+    close = d.querySelector('.close a');
+    area = {
+      "width": container.clientWidth,
+      "height": container.clientHeight
+    };
 
-    // Detect webkit browser
-    if (window.chrome || (window.getComputedStyle && !window.globalStorage && !window.opera)) {
-      //wrapper.setAttribute('scrolling','no');
-    }
+    // Devices
+    var opts = '<option value="auto" selected>Auto</option>';
+    opts += '<option value="custom" hidden>Custom</option>';
+    opts += setDevice('phone');
+    opts += setDevice('tablet');
+    opts += setDevice('desktop');
+    devices.innerHTML = opts;
 
-    // Disabled css refresh if we are not on server environment
-    if (w.location.protocol !== 'http:') {
-      refreshBtn.setAttribute('style', 'display:none');
-    } else {
-      reloadBtn.setAttribute('style', 'display:none');
-    }
+    devices.addEventListener('change', function(e) {
 
-    // Events
-    [].forEach.call(document.querySelectorAll('#devices a'), function(el) {
-      el.addEventListener('click', function(e) {
+      var self = this;
+      if ((self.value == 'auto' && isResized === false) || isAnimated === true) return false;
 
-        [].forEach.call(document.querySelectorAll('#devices a'), function(el) {
-          el.classList.remove('active');
-        });
+      isAnimated = true;
+      isResized = true;
 
-        e.preventDefault();
-        e.stopPropagation();
-
-        var self = this;
-        if ((self.classList.contains('auto') && isResized === false) || isAnimated === true) return false;
-        isAnimated = true;
-
-        if (isResized === false) {
-          isResized = true;
-          setPosition(sizes.auto, true);
+      setTimeout(function() {
+        if (self.value == 'auto') {
+          setPosition(self.value, false);
+        } else {
+          var opt = self.options[self.selectedIndex],
+            screenSize = viewPort[opt.dataset.device][Number(opt.value)];
+          setPosition(screenSize, false,);
         }
-
-        setTimeout(function() {
-          self.classList.add('active');
-          if (self.classList.contains('smartphone-portrait')) {
-            setPosition(sizes.smartphonePortrait, false, 'smartphonePortrait');
-          } else if (self.classList.contains('smartphone-landscape')) {
-            setPosition(sizes.smartphoneLandscape, false, 'smartphoneLandscape');
-          } else if (self.classList.contains('tablet-portrait')) {
-            setPosition(sizes.tabletPortrait, false, 'tabletPortrait');
-          } else if (self.classList.contains('tablet-landscape')) {
-            setPosition(sizes.tabletLandscape, false, 'tabletLandscape');
-          } else if (self.classList.contains('auto')) {
-            setPosition(sizes.auto, false, 'auto');
-          }
-        }, 10);
-      })
+      }, 10);
     });
 
-    close.addEventListener('click', function(e) {
+    var oldValue = '';
+    [sizeWidth, sizeHeight].forEach(function(el) {
+      el.addEventListener('keydown', function(e) {
+        oldValue = e.target.innerText;
+        if (keyEvent(e) == 13) {
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      });
+      el.addEventListener('input', function(e) {
+        if (e.data && !isNumeric(e.data) || e.target.innerText.length > 4) e.target.innerHTML = oldValue;
+      });
+      el.addEventListener('blur', function() {
+        var size = [sizeWidth.innerText, sizeHeight.innerText];
+        if (size.join(',') != sizes.join(',')) {
+          devices.value = 'custom';
+          isResized = true;
+          setTimeout(function(){ setPosition(size, false); }, 260);
+        }
+      });
+    });
+
+    rotate.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      w.location = d.URL;
+      this.classList.toggle('active');
+      sizes = sizes.reverse();
+      setPosition(sizes, false);
     }, false);
+
+    // Disabled css refresh if we are not on server environment
+    if (w.location.protocol.search(/https?:/) == -1) {
+      refreshBtn.parentElement.style.display = 'none';
+    } else {
+      reloadBtn.parentElement.style.display = 'none';
+    }
 
     refreshBtn.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      refreshBtn.classList.toggle('active');
-      if (refreshBtn.classList.contains('active')) {
+      this.classList.toggle('active');
+      if (this.classList.contains('active')) {
         refreshCss();
       } else {
         refreshCss(true);
@@ -190,41 +270,57 @@ window.resbook = {};
       reloadIframe();
     }, false);
 
+    close.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      w.location.reload();
+    }, false);
+
     w.addEventListener('resize', function() {
-      resize();
+      area = {
+        "width": container.clientWidth,
+        "height": container.clientHeight
+      };
+      setPosition(sizes, false);
     }, false);
 
     w.addEventListener('keyup', function(e) {
-      var key = e.keyCode ? e.keyCode : e.charCode,
+      var key = keyEvent(e);
         keys = {
-          49: 'tabletPortrait',
-          50: 'tabletLandscape',
-          51: 'smartphonePortrait',
-          52: 'smartphoneLandscape',
-          53: 'auto',
-          116: 'reloadIframe',
-          82: 'reloadIframe'
+          82: 'reload_iframe',
+          116: 'reload_iframe'
         };
 
-      // Quit now if the key isn't in our object map
-      if (typeof(keys[key]) == 'undefined') {
-        return false;
-      } else if (e.metaKey && keys[key] == 'reloadIframe') {
+      if (key == 13 && d.getElementById('size').contains(d.activeElement)) {
+        d.activeElement.blur();
+      } else if (e.metaKey && keys[key] == 'reload_iframe' || keys[key] == 'reload_iframe') {
         e.preventDefault();
         e.stopPropagation();
         reloadIframe();
         return false;
-      } else if (keys[key] == 'reloadIframe') {
-        e.preventDefault();
-        e.stopPropagation();
-        reloadIframe();
-        return false;
-      } else {
-        setPosition(sizes[keys[key]], false, keys[key]);
       }
     }, false);
 
-    resize();
-    size.style.minWidth = 0;
+    showSize();
   });
+
+  // === Public methods ====
+  /**
+   * Change url and the document title with pushState method
+   * @param  {string} u   url of the new page
+   * @param  {title} t title of the new page
+   */
+  rb.changeUrl = function(u, t) {
+    d.title = t + ' - Responsive test';
+    if (history.pushState) {
+      try {
+        history.pushState({}, "New Page", u);
+      } catch (e) {}
+    }
+    if (refreshBtn.classList.contains('active')) {
+      refreshCss();
+    } else {
+      refreshCss(true);
+    }
+  };
 })(resbook);
