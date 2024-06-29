@@ -1,5 +1,5 @@
 /*
- *  CSSrefresh v1.0.1
+ *  CSSrefresh v1.0.3
  *  
  *  Copyright (c) 2012 Fred Heusschen
  *  www.frebsite.nl
@@ -11,7 +11,6 @@
 
 (function() {
 
-  var body = document.querySelector('body');
   var phpjs = {
     array_filter: function(arr, func) {
       var retObj = {};
@@ -63,7 +62,7 @@
     }
   };
 
-  var cssRefresh = function() {
+  var cssRefresh = function(links) {
     this.reloadFile = function(links) {
       for (var a = 0, l = links.length; a < l; a++) {
         var link = links[a],
@@ -74,7 +73,7 @@
           //  has been changed
           if (link.last != newTime) {
             //  reload
-            link.elem.setAttribute('href', this.getRandom(this.getHref(link.elem)));
+            link.elem.setAttribute('href', this.getRandom(link.href));
           }
         }
 
@@ -82,30 +81,52 @@
         link.last = newTime;
       }
       setTimeout(function() {
-        if (body.classList.contains('cssrefresh')) this.reloadFile(links);
+        var body = document.getElementsByTagName('body')[0];
+        if (this.hasClass(body, 'cssrefresh')) this.reloadFile(links);
       }, 1000);
     };
 
-    this.getHref = function(f) {
-      return f.getAttribute('href').split('?')[0]
+    this.getRandom = function(url) {
+      // If hash exists, remove it and save it for later
+      var hashIndex = url.indexOf('#'),
+        hash = '';
+      if (hashIndex != -1) {
+        hash = url.slice(hashIndex);
+        url = url.slice(0, hashIndex);
+      }
+
+      var qs = url.indexOf('?') != -1 ? '&' : '?';
+      var param = qs + 'x=' + Math.random();
+
+      return url + param + hash;
     };
-    this.getRandom = function(f) {
-      return f + '?x=' + Math.random()
+
+    this.hasClass = function(selector, token) {
+      return selector.className.search(new RegExp('(^|\\s)'+ token +'(\\s|$)')) != -1
     };
+
+    this.reloadFile(links);
+  };
+
+  var getLinks = function() {
     var files = document.getElementsByTagName('link'),
       links = [];
+
     for (var a = 0, l = files.length; a < l; a++) {
       var elem = files[a],
         rel = elem.rel;
+
       if (typeof rel != 'string' || rel.length == 0 || rel == 'stylesheet') {
         links.push({
           'elem': elem,
-          'href': this.getHref(elem),
+          'href': elem.getAttribute('href').split('?')[0],
           'last': false
-        })
+        });
       }
     }
-    this.reloadFile(links);
+    return links;
   };
-  cssRefresh();
+
+  var links = getLinks();
+  cssRefresh(links);
 })();
