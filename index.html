@@ -25,13 +25,18 @@
           </p>
         </li>
         <li>
+          <img src="./assets/img/web/reload.png" alt="">
+          <p>
+            <b>Reload page without cache</b>
+            <span>Reload just the iframe of your test page, saving you from having to re-apply the bookmarklet each time.</span>
+          </p>
+        </li>
+        <li>
           <img src="./assets/img/web/cssrefresh.png" alt="">
           <p>
             <b>Toggle CSS Refresh</b>
             <span>As soon as you save a CSS-file, the changes are directly implemented, without having to refresh your browser. It only works in a server environment.<br>
             Powered by <a href="https://web.archive.org/web/20191005044509/http://cssrefresh.frebsite.nl/" target="_blank">CSS Refresh</a></span>
-            <br/>
-            <span>In local environments this button will reload just the iframe your test page, saving you from having to re-apply the bookmarklet each time - mapped to the F5 and R keys.</span>
           </p>
         </li>
         <li>
@@ -57,7 +62,7 @@
         <h1>Responsive Design Bookmarklet</h1>
         <h3>a handy tool for responsive design testing</h3>
       </hgroup>
-      <a id="bookmarklet" href="javascript:void((function(d){d.write('&#60;!DOCTYPE html>&#60;html>&#60;head>&#60;meta charset=&#34;UTF-8&#34;>&#60;title>'+d.title+' - Responsive test &#60;/title>&#60;link rel=&#34;stylesheet&#34; href=&#34;//cdn.jsdelivr.net/gh/sekedus/rwd@master/assets/css/app.css&#34;>&#60;script src=&#34;//cdn.jsdelivr.net/gh/sekedus/rwd@master/assets/js/app.min.js&#34;>&#60;/script>&#60;/head>&#60;body>&#60;header>&#60;div class=&#34;menu&#34;>&#60;div class=&#34;close&#34;>&#60;a href=&#34;#&#34;>&#10005;&#60;/a>&#60;/div>&#60;div id=&#34;size&#34;>&#60;span class=&#34;width&#34; contenteditable>&#60;/span>x&#60;span class=&#34;height&#34; contenteditable>&#60;/span>&#60;/div>&#60;div class=&#34;rotate&#34;>&#60;a href=&#34;#&#34;>I&#60;/a>&#60;/div>&#60;div id=&#34;devices&#34;>&#60;select>&#60;/select>&#60;/div>&#60;div class=&#34;cssrefresh&#34;>&#60;a href=&#34;#&#34;>I&#60;/a>&#60;/div>&#60;div class=&#34;reloadiframe&#34;>&#60;a href=&#34;#&#34;>I&#60;/a>&#60;/div>&#60;/div>&#60;/header>&#60;section id=&#34;container&#34;>&#60;div id=&#34;wrapper&#34;>&#60;iframe src=&#34;'+d.URL+'&#34; onLoad=&#34;resbook.changeUrl(this.contentWindow.location,this.contentDocument.title);&#34;>&#60;/iframe>&#60;/div>&#60;/section>&#60;/body>&#60;/html>')})(document));">Responsive Testing</a><br>
+      <a id="bookmarklet" href="javascript:void((function(d){d.write('&#60;!DOCTYPE html>&#60;html>&#60;head>&#60;meta charset=&#34;UTF-8&#34;>&#60;title>'+d.title+' - Responsive test &#60;/title>&#60;link rel=&#34;stylesheet&#34; href=&#34;//sekedus.github.io/rwd/assets/css/app.css&#34;>&#60;link rel=&#34;icon&#34; type=&#34;image/png&#34; sizes=&#34;32x32&#34; href=&#34;//sekedus.github.io/rwd/assets/img/web/favicon.png&#34;>&#60;script src=&#34;//sekedus.github.io/rwd/assets/js/app.min.js&#34;>&#60;/script>&#60;/head>&#60;body>&#60;header>&#60;div class=&#34;menu&#34;>&#60;div class=&#34;close&#34;>&#60;a href=&#34;#&#34;>&#10005;&#60;/a>&#60;/div>&#60;div id=&#34;size&#34;>&#60;span class=&#34;width&#34; contenteditable>&#60;/span>x&#60;span class=&#34;height&#34; contenteditable>&#60;/span>&#60;/div>&#60;div class=&#34;rotate&#34;>&#60;a href=&#34;#&#34;>I&#60;/a>&#60;/div>&#60;div id=&#34;devices&#34;>&#60;select>&#60;/select>&#60;/div>&#60;div class=&#34;cssrefresh&#34;>&#60;a href=&#34;#&#34;>I&#60;/a>&#60;/div>&#60;div class=&#34;reloadiframe&#34;>&#60;a href=&#34;#&#34;>I&#60;/a>&#60;/div>&#60;/div>&#60;/header>&#60;section id=&#34;container&#34;>&#60;div id=&#34;wrapper&#34;>&#60;iframe src=&#34;'+d.URL+'&#34; onLoad=&#34;resbook.changeUrl(this.contentWindow.location,this.contentDocument.title);&#34;>&#60;/iframe>&#60;/div>&#60;/section>&#60;/body>&#60;/html>')})(document));">Responsive Testing</a><br>
       <span>Drag the link above into your bookmarks bar</span>
     </article>
   </section>

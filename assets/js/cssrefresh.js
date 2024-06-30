@@ -95,8 +95,8 @@
         url = url.slice(0, hashIndex);
       }
 
-      var qs = url.indexOf('?') != -1 ? '&' : '?';
-      var param = qs + 'x=' + Math.random();
+      var qs = url.indexOf('?') != -1 ? '&' : '?',
+        param = qs + 'x=' + Math.random();
 
       return url + param + hash;
     };

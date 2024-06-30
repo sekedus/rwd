@@ -663,13 +663,17 @@ footer {
   a {color: #395c84;}
 
   header {
-    h4 {margin: 0;}
     padding: 1em 1.5em;
     border-bottom: 1px solid rgba(#000, .1);
+    
+    h4 {
+      margin: 0;
+      font-weight: bold;
+    }
 
     a {
       float: right;
-      color: rgba(#000, .35);
+      color: #000;
       font-size: 1.25em;
     }
   }
@@ -685,7 +689,7 @@ footer {
   }
 
   li {
-    margin: 0 0 1em;
+    margin: 0 0 1.5em;
 
     img {
       @include border-radius(5px);
